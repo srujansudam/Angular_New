@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.cg.ibs.rm.exception.IBSExceptions;
@@ -20,7 +21,8 @@ import com.cg.ibs.rm.model.BankerHistory;
 import com.cg.ibs.rm.model.CreditCard;
 import com.cg.ibs.rm.service.Bank_AdminService;
 
-@RestController("/bankAdminCard")
+@RestController
+@RequestMapping("/bankAdminCard")
 @Scope("session")
 @CrossOrigin
 public class AdminCreditController {
@@ -28,26 +30,6 @@ public class AdminCreditController {
 	@Autowired
 	private Bank_AdminService service;
 	private Integer bankId;
-
-	@GetMapping("/bankerLogin/{userId}")
-	public ResponseEntity<String> bankerLogin(@PathVariable("userId") String userId) throws IBSExceptions {
-		ResponseEntity<String> result;
-		Banker banker = service.getBankerDetails(userId);
-		bankId = banker.getBankerId();
-		result = new ResponseEntity<String>("logged in succesfully", HttpStatus.OK);
-		return result;
-	}
-
-	@GetMapping("/{bankerId}")
-	public ResponseEntity<Set<BankerHistory>> showCreditHistory(@PathVariable("bankerId") Integer bankerId) {
-		Set<BankerHistory> history = service.getCreditHistory(bankerId);
-		ResponseEntity<Set<BankerHistory>> result;
-		if (history.isEmpty())
-			result = new ResponseEntity<Set<BankerHistory>>(history, HttpStatus.NO_CONTENT);
-		else
-			result = new ResponseEntity<Set<BankerHistory>>(history, HttpStatus.OK);
-		return result;
-	}
 
 	@GetMapping()
 	public ResponseEntity<Set<CreditCard>> showUnapprovedCardRequests() {
@@ -61,8 +43,8 @@ public class AdminCreditController {
 		return result;
 	}
 
-	@GetMapping("/{bankerId}")
-	public ResponseEntity<Set<CreditCard>> showUnapprovedCardRequestsForMe(@PathVariable("bankerId") Integer bankerId) {
+	@GetMapping("/{bankerId2}")
+	public ResponseEntity<Set<CreditCard>> showUnapprovedCardRequestsForMe(@PathVariable("bankerId2") Integer bankerId) {
 		Set<CreditCard> cardList = service.showUnapprovedCreditCardsForMe(bankerId);
 		ResponseEntity<Set<CreditCard>> result;
 		if (cardList.isEmpty())

@@ -16,6 +16,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import com.cg.ibs.rm.ui.CardStatus;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "Credit_Cards")
@@ -54,6 +55,7 @@ public class CreditCard {
 	@Column(name = "Remarks")
 	private String adminRemarks = " ";
 
+	@JsonIgnore
 	@ManyToOne
 	@JoinColumn(name = "UCI")
 	private Customer customer;

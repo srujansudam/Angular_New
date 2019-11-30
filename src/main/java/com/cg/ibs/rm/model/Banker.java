@@ -16,8 +16,6 @@ public class Banker {
 	@Column(name="PASSWORD")
 	private String password;
 	
-	
-	
 	public Banker() {
 		super();
 	}

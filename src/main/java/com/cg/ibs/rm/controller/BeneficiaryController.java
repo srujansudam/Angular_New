@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,16 +16,19 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.cg.ibs.rm.exception.IBSExceptions;
 import com.cg.ibs.rm.model.Beneficiary;
 import com.cg.ibs.rm.service.BeneficiaryAccountService;
 
 @RestController
+@RequestMapping("/beneficiary")
 @Scope("session")
+@CrossOrigin
 public class BeneficiaryController {
 
-	UserController controller = new UserController();
+	UserLogin controller = new UserLogin();
 
 	@Autowired
 	private BeneficiaryAccountService beneficiaryservice;

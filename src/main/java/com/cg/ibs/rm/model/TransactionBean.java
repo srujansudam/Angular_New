@@ -20,6 +20,7 @@ import javax.persistence.Table;
 
 import com.cg.ibs.rm.ui.TransactionMode;
 import com.cg.ibs.rm.ui.TransactionType;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "Transactions")
@@ -58,6 +59,7 @@ public class TransactionBean implements Serializable {
 	@Column(name = "REFERENCE_ID", length = 20)
 	private String referenceId;
 
+	@JsonIgnore
 	@ManyToOne
 	private Account account;
 

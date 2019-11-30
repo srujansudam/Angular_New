@@ -12,14 +12,15 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.cg.ibs.rm.exception.IBSExceptions;
-import com.cg.ibs.rm.model.Banker;
 import com.cg.ibs.rm.model.Beneficiary;
 import com.cg.ibs.rm.service.Bank_AdminService;
 
-@RestController("/bankAdminBen")
+@RestController
+@RequestMapping("/bankAdminBen")
 @Scope("session")
 @CrossOrigin
 public class AdminBenController {
@@ -27,15 +28,6 @@ public class AdminBenController {
 	@Autowired
 	private Bank_AdminService service;
 	private Integer bankerId;
-
-	@GetMapping("/bankerLogin/{userId}")
-	public ResponseEntity<String> bankerLogin(@PathVariable("userId") String userId) throws IBSExceptions {
-		ResponseEntity<String> result;
-		Banker banker = service.getBankerDetails(userId);
-		bankerId = banker.getBankerId();
-		result = new ResponseEntity<String>("logged in succesfully", HttpStatus.OK);
-		return result;
-	}
 
 	@GetMapping
 	public ResponseEntity<Set<Beneficiary>> showUnapprovedBenRequests() {
@@ -48,8 +40,8 @@ public class AdminBenController {
 		return result;
 	}
 
-	@GetMapping("/{bankerId}")
-	public ResponseEntity<Set<Beneficiary>> showUnapprovedBenRequestsForMe(@PathVariable("bankerId") Integer bankerId) {
+	@GetMapping("/{bankerId1}")
+	public ResponseEntity<Set<Beneficiary>> showUnapprovedBenRequestsForMe(@PathVariable("bankerId1") Integer bankerId) {
 		Set<Beneficiary> benList = service.showUnapprovedBeneficiariesForMe(bankerId);
 		ResponseEntity<Set<Beneficiary>> result;
 		if (benList.isEmpty())

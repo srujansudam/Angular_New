@@ -49,5 +49,32 @@ public class ServiceProviderId implements Serializable {
 		return "ServiceProviderId [Spi=" + spi + ", uci=" + uci + "]";
 	}
 
+	 @Override
+	    public boolean equals(Object obj) {
+	        if (obj == this) {
+	            return true;
+	        }
+	        if (obj == null || obj.getClass() != this.getClass()) {
+	            return false;
+	        }
+
+	        ServiceProviderId spId = (ServiceProviderId) obj;
+	        return (uci == spId.uci||(uci != null && uci.equals(spId.getUci())))
+	                && (spi == spId.spi 
+	                     || (spi != null && spi.equals(spId.getSpi())));
+	    }
+	    
+	    @Override
+	    public int hashCode() {
+	        final int prime = 31;
+	        int result = 1;
+	        result = prime * result
+	                + ((uci == null) ? 0 : uci.hashCode());
+	        result = prime * result
+	                + ((spi == null) ? 0 : spi.hashCode());
+	        return result;
+	    }
+	    
+	}
 	
-}
+

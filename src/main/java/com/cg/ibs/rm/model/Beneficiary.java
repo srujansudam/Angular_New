@@ -14,6 +14,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.cg.ibs.rm.ui.CardStatus;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.cg.ibs.rm.ui.Beneficiary_Type;
 
 @Entity
@@ -45,6 +46,7 @@ public class Beneficiary implements Serializable {
 	@Column(name = "BANKER_ID", nullable = false)
 	private Integer bankId;
 
+	@JsonIgnore
 	@ManyToOne
 	@JoinColumn(name = "UCI")
 	private Customer customer;
