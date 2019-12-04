@@ -61,6 +61,22 @@ public class CustomerDAOImpl implements CustomerDAO {
 
 	}
 
+	public Customer getCustomer(String userId) throws IBSExceptions {
+		CriteriaBuilder builder = manager.getCriteriaBuilder();
+		BigInteger uci = null;
+		Customer customer;
+		CriteriaQuery<BigInteger> query = builder.createQuery(BigInteger.class);
+		Root<Customer> custRoot = query.from(Customer.class);
+		query.select(custRoot.<BigInteger>get("uci")).where(builder.equal(custRoot.get("userId"), userId));
+		try {
+			uci = manager.createQuery(query).getSingleResult();
+			customer = manager.find(Customer.class, uci);
+		} catch (Exception e) {
+			throw new IBSExceptions(ExceptionMessages.NO_CUSTOMERS);
+		}
+		return customer;
+	}
+
 	public CustomerDAOImpl() {
 		super();
 

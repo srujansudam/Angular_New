@@ -13,6 +13,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.springframework.context.annotation.Scope;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
@@ -33,7 +35,7 @@ public class Customer implements Serializable {
 	@Column(name = "FIRST_NAME", nullable = false, length = 20)
 	private String firstName;
 	@Column(name = "LAST_NAME", nullable = true, length = 20)
-	private String lastname;
+	private String lastName;
 	@Column(name = "FATHER_NAME", nullable = false, length = 40)
 	private String fatherName;
 	@Column(name = "MOTHER_NAME", nullable = false, length = 40)
@@ -115,11 +117,11 @@ public class Customer implements Serializable {
 	}
 
 	public String getLastname() {
-		return lastname;
+		return lastName;
 	}
 
 	public void setLastname(String lastname) {
-		this.lastname = lastname;
+		this.lastName = lastname;
 	}
 
 	public String getFatherName() {

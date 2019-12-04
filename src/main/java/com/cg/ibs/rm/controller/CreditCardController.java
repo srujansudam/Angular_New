@@ -21,40 +21,40 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.cg.ibs.rm.exception.IBSExceptions;
 import com.cg.ibs.rm.model.CreditCard;
+import com.cg.ibs.rm.model.Message;
 import com.cg.ibs.rm.service.CreditCardService;
 
 @RestController
-@RequestMapping("/creditCard")
+@RequestMapping("/creditCard/{uci}")
 @Scope("session")
 @CrossOrigin
 public class CreditCardController {
 
 	@Autowired
 	private CreditCardService creditCard;
-	UserLogin controller = new UserLogin();
 
 	@PostMapping
-	public ResponseEntity<String> addCard(@RequestBody CreditCard card) throws IBSExceptions {
-		ResponseEntity<String> result = null;
-		LocalDate date = LocalDate.of(card.getYear(), card.getMonth(), 27);
-
+	public ResponseEntity<Message> addCard(@RequestBody CreditCard card, @PathVariable("uci") String uci) throws IBSExceptions {
+		ResponseEntity<Message> result = null;
+		LocalDate date= card.getDateOfExpiry();
+		String dateStr = date.toString().substring(0, 10);
 		if (creditCard.validateCardNumber(card.getCardNumber().toString())
-				&& creditCard.validateDateOfExpiry(date.toString())
-				&& creditCard.validateNameOnCard(card.getNameOnCard())) {
-			card.setDateOfExpiry(date);
+				&& creditCard.validateDateOfExpiry(dateStr))
+//				&& creditCard.validateNameOnCard(card.getNameOnCard())) 
+		{
 			card.setTimestamp(LocalDateTime.now());
-			creditCard.saveCardDetails(controller.getUci(), card);
-			result = new ResponseEntity<String>("Card gone for approval", HttpStatus.OK);
+			creditCard.saveCardDetails(new BigInteger(uci), card);
+			result = new ResponseEntity<>(new Message("Card gone for Approval", null, null), HttpStatus.OK);
 		} else {
-			result = new ResponseEntity<String>("format incorrect", HttpStatus.NOT_ACCEPTABLE);
+			result = new ResponseEntity<>(new Message("format incorrect", null, null), HttpStatus.NOT_ACCEPTABLE);
 		}
 		return result;
 	}
 
 	@GetMapping
-	public ResponseEntity<Set<CreditCard>> viewCardDetails() throws IBSExceptions {
+	public ResponseEntity<Set<CreditCard>> viewCardDetails(@PathVariable("uci") String uci) throws IBSExceptions {
 		ResponseEntity<Set<CreditCard>> result = null;
-		Set<CreditCard> cards = creditCard.showCardDetails(controller.getUci());
+		Set<CreditCard> cards = creditCard.showCardDetails(new BigInteger(uci));
 		result = new ResponseEntity<Set<CreditCard>>(cards, HttpStatus.OK);
 		return result;
 	}
@@ -62,9 +62,11 @@ public class CreditCardController {
 	@DeleteMapping("/{cardNumber}")
 	public ResponseEntity<String> deleteCreditCard(@PathVariable("cardNumber") BigInteger cardNumber)
 			throws IBSExceptions {
+		String exc = null;
 		ResponseEntity<String> result = null;
 		creditCard.deleteCardDetails(cardNumber);
-		result = new ResponseEntity<String>("Card deleted successfully", HttpStatus.OK);
+		exc = "Card deleted successfully";
+		result = new ResponseEntity<String>(exc, HttpStatus.OK);
 		return result;
 
 	}

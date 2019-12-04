@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.cg.ibs.rm.dao.CustomerDAO;
 import com.cg.ibs.rm.exception.IBSExceptions;
+import com.cg.ibs.rm.model.Customer;
 
 @Service("customerServiceImpl")
 public class CustomerServiceImpl implements CustomerService {
@@ -27,5 +28,9 @@ public class CustomerServiceImpl implements CustomerService {
 	
 	public BigInteger returnUCI(String userID) throws IBSExceptions {
 		return customerDAO.returnUCI(userID);
+	}
+	
+	public Customer getCustomer(String userId) throws IBSExceptions {
+		return customerDAO.getCustomer(userId);
 	}
 }
