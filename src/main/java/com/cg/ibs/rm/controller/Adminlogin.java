@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.cg.ibs.rm.exception.IBSExceptions;
 import com.cg.ibs.rm.model.Banker;
+import com.cg.ibs.rm.model.Message;
 import com.cg.ibs.rm.service.Bank_AdminService;
 
 @RestController
@@ -26,14 +27,14 @@ public class Adminlogin {
 	private Integer bankerId;
 
 	@GetMapping("/{userId}")
-	public ResponseEntity<String> bankerLogin(@PathVariable("userId") String userId) {
-		ResponseEntity<String> result;
+	public ResponseEntity<Message> bankerLogin(@PathVariable("userId") String userId) {
+		ResponseEntity<Message> result;
 		try {
 			Banker banker = service.getBankerDetails(userId);
 			bankerId = banker.getBankerId();
-			result = new ResponseEntity<String>("logged in succesfully", HttpStatus.OK);
+			result = new ResponseEntity<>(new Message("logged in succesfully", null, banker), HttpStatus.OK);
 		} catch (IBSExceptions e) {
-			result = new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
+			result = new ResponseEntity<>(new Message(e.getMessage(), null, null), HttpStatus.BAD_REQUEST);
 		}
 		return result;
 	}

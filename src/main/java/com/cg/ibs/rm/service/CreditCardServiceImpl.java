@@ -49,8 +49,8 @@ public class CreditCardServiceImpl implements CreditCardService {
 		// CreditCardServiceImpl class");
 		LocalDate today = LocalDate.now();
 		boolean validDate = false;
-		if (Pattern.matches("^((0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[012])/([12][0-9]{3}))$", creditCardExpiry)) {
-			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+		if (Pattern.matches("^(([12][0-9]{3})-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01]))$", creditCardExpiry)) {
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 			LocalDate creditDateOfExpiry = LocalDate.parse(creditCardExpiry, formatter);
 			if (!creditDateOfExpiry.isBefore(today)) {
 				validDate = true;

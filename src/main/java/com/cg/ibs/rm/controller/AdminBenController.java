@@ -10,13 +10,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.cg.ibs.rm.exception.IBSExceptions;
 import com.cg.ibs.rm.model.Beneficiary;
+import com.cg.ibs.rm.model.Message;
 import com.cg.ibs.rm.service.Bank_AdminService;
 
 @RestController
@@ -51,21 +52,17 @@ public class AdminBenController {
 		return result;
 	}
 
-	@PutMapping("/{accountNumber}/{decision}")
-	public ResponseEntity<String> acceptBeneficiaries(@PathVariable("accountNumber") BigInteger accountNumber,
+	@GetMapping("/{accountNumber}/{decision}")
+	public ResponseEntity<Message> acceptBeneficiaries(@PathVariable("accountNumber") BigInteger accountNumber,
 			@PathVariable("decision") String decision) throws IBSExceptions {
-		ResponseEntity<String> result;
-		if (accountNumber == null)
-			result = new ResponseEntity<String>("No details entered", HttpStatus.NO_CONTENT);
+		ResponseEntity<Message> result;
 		if (decision.equalsIgnoreCase("approve")) {
 			service.saveBeneficiaryDetails(accountNumber);
-			result = new ResponseEntity<String>("Approved", HttpStatus.OK);
-		} else if (decision.equalsIgnoreCase("disapprove")) {
+			result = new ResponseEntity<>(new Message("Approved", null, null), HttpStatus.OK);
+		} else  {
 			service.disapproveBenficiary(accountNumber);
-			result = new ResponseEntity<String>("Disapproved", HttpStatus.OK);
+			result = new ResponseEntity<>(new Message("Disapproved", null, null), HttpStatus.OK);
 
-		} else {
-			result = new ResponseEntity<String>("inappropriate decision", HttpStatus.UNAUTHORIZED);
 		}
 		return result;
 	}

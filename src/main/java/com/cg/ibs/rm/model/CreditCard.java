@@ -51,7 +51,7 @@ public class CreditCard {
 	@Column(name = "Credit_Card_Timestamp")
 	private LocalDateTime timestamp;
 	@Column(name = "BANKER_ID", nullable = false)
-	private Integer bankId;
+	private Integer bankerId;
 	@Column(name = "Remarks")
 	private String adminRemarks = " ";
 
@@ -61,11 +61,11 @@ public class CreditCard {
 	private Customer customer;
 	
 	public Integer getBankId() {
-		return bankId;
+		return bankerId;
 	}
 
 	public void setBankId(Integer bankId) {
-		this.bankId = bankId;
+		this.bankerId = bankId;
 	}
 
 	public LocalDateTime getTimestamp() {
@@ -202,7 +202,7 @@ public class CreditCard {
 	this.year = year;
 	this.dateOfExpiry = dateOfExpiry;
 	this.timestamp = timestamp;
-	this.bankId = bankId;
+	this.bankerId = bankId;
 	this.adminRemarks = adminRemarks;
 	this.customer = customer;
 }

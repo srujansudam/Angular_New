@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.Set;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpStatus;
@@ -18,12 +19,14 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
 import com.cg.ibs.rm.exception.IBSExceptions;
 import com.cg.ibs.rm.model.Beneficiary;
+import com.cg.ibs.rm.model.Message;
 import com.cg.ibs.rm.service.BeneficiaryAccountService;
 
 @RestController
-@RequestMapping("/beneficiary")
+@RequestMapping("/beneficiary/{uci}")
 @Scope("session")
 @CrossOrigin
 public class BeneficiaryController {
@@ -34,63 +37,62 @@ public class BeneficiaryController {
 	private BeneficiaryAccountService beneficiaryservice;
 
 	@PostMapping
-	public ResponseEntity<String> addSameBeneficiary(@RequestBody Beneficiary beneficiary) throws IBSExceptions {
-		ResponseEntity<String> result = null;
+	public ResponseEntity<Message> addSameBeneficiary(@RequestBody Beneficiary beneficiary,
+			@PathVariable("uci") String uci) throws IBSExceptions {
+		ResponseEntity<Message> result = null;
 		if (beneficiaryservice.validateBeneficiaryAccountNameOrBankName(beneficiary.getAccountName())
 				&& beneficiaryservice.validateBeneficiaryAccountNumber(beneficiary.getAccountNumber().toString())) {
 			beneficiary.setBankName("IBS");
 			beneficiary.setIfscCode("IBS45623778");
 			beneficiary.setTimestamp(LocalDateTime.now());
-			beneficiaryservice.saveBeneficiaryAccountDetails(controller.getUci(), beneficiary);
-			result = new ResponseEntity<String>("Beneficiary gone for approval", HttpStatus.OK);
+			beneficiaryservice.saveBeneficiaryAccountDetails(new BigInteger(uci), beneficiary);
+			result = new ResponseEntity<>(new Message("Beneficiary gone for approval", null, null), HttpStatus.OK);
 		} else {
-			result = new ResponseEntity<String>("format incorrect", HttpStatus.NOT_ACCEPTABLE);
+			result = new ResponseEntity<>(new Message("format incorrect", null, null), HttpStatus.NOT_ACCEPTABLE);
 		}
 		return result;
 	}
 
 	@PostMapping("/otherbank")
-	public ResponseEntity<String> addOtherBeneficiary(@RequestBody Beneficiary beneficiary) throws IBSExceptions {
-		ResponseEntity<String> result = null;
+	public ResponseEntity<Message> addOtherBeneficiary(@RequestBody Beneficiary beneficiary, @PathVariable("uci") String uci) throws IBSExceptions {
+		ResponseEntity<Message> result = null;
 		if (beneficiaryservice.validateBeneficiaryAccountNameOrBankName(beneficiary.getAccountName())
 				&& beneficiaryservice.validateBeneficiaryAccountNumber(beneficiary.getAccountNumber().toString())
 				&& beneficiaryservice.validateBeneficiaryIfscCode(beneficiary.getIfscCode())
 				&& beneficiaryservice.validateBeneficiaryAccountNameOrBankName(beneficiary.getBankName())) {
 			beneficiary.setTimestamp(LocalDateTime.now());
-			beneficiaryservice.saveBeneficiaryAccountDetails(controller.getUci(), beneficiary);
-			result = new ResponseEntity<String>("Beneficiary gone for approval", HttpStatus.OK);
+			beneficiaryservice.saveBeneficiaryAccountDetails(new BigInteger(uci), beneficiary);
+			result = new ResponseEntity<>(new Message("Beneficiary gone for approval", null, null), HttpStatus.OK);
 		} else {
-			result = new ResponseEntity<String>("format incorrect", HttpStatus.NOT_ACCEPTABLE);
+			result = new ResponseEntity<>(new Message("format incorrect", null, null), HttpStatus.NOT_ACCEPTABLE);
 		}
 		return result;
 	}
 
 	@GetMapping
-	public ResponseEntity<Set<Beneficiary>> viewBeneficiaries() throws IBSExceptions {
+	public ResponseEntity<Set<Beneficiary>> viewBeneficiaries(@PathVariable("uci") String uci) throws IBSExceptions {
 		ResponseEntity<Set<Beneficiary>> result = null;
 		Set<Beneficiary> beneficiaries;
-
-		beneficiaries = beneficiaryservice.showBeneficiaryAccount(controller.getUci());
+		beneficiaries = beneficiaryservice.showBeneficiaryAccount(new BigInteger(uci));
 		result = new ResponseEntity<Set<Beneficiary>>(beneficiaries, HttpStatus.OK);
-
 		return result;
 	}
 
 	@DeleteMapping("/{accountNumber}")
-	public ResponseEntity<String> deletebeneficiary(@PathVariable("accountNumber") BigInteger accountNumber)
+	public ResponseEntity<Message> deletebeneficiary(@PathVariable("accountNumber") BigInteger accountNumber)
 			throws IBSExceptions {
-		ResponseEntity<String> result = null;
+		ResponseEntity<Message> result = null;
 
 		beneficiaryservice.deleteBeneficiaryAccountDetails(accountNumber);
-		result = new ResponseEntity<String>("Account deleted successfully", HttpStatus.OK);
+		result = new ResponseEntity<>(new Message("Account deleted successfully", null, null), HttpStatus.OK);
 
 		return result;
 	}
 
-	@PutMapping("/modifyinother/{accountNumber}")
-	public ResponseEntity<String> modifybeneficiary(@PathVariable("accountNumber") BigInteger accountNumber,
+	@PutMapping("/modifyinother/{accountNumber}")	
+	public ResponseEntity<Message> modifybeneficiary(@PathVariable("accountNumber") BigInteger accountNumber,
 			@RequestBody Beneficiary beneficiary) throws IBSExceptions, IOException {
-		ResponseEntity<String> result = null;
+		ResponseEntity<Message> result = null;
 		if (beneficiaryservice.validateBeneficiaryAccountNameOrBankName(beneficiary.getAccountName())
 				&& beneficiaryservice.validateBeneficiaryAccountNumber(beneficiary.getAccountNumber().toString())
 				&& beneficiaryservice.validateBeneficiaryIfscCode(beneficiary.getIfscCode())
@@ -98,29 +100,29 @@ public class BeneficiaryController {
 			beneficiary.setTimestamp(LocalDateTime.now());
 
 			beneficiaryservice.modifyBeneficiaryAccountDetails(accountNumber, beneficiary);
-			result = new ResponseEntity<String>("Account gone for modification", HttpStatus.OK);
+			result = new ResponseEntity<>(new Message("Account gone for modification", null, null), HttpStatus.OK);
 
 		} else {
-			result = new ResponseEntity<String>("format incorrect", HttpStatus.NOT_ACCEPTABLE);
+			result = new ResponseEntity<>(new Message("format incorrect", null, null), HttpStatus.NOT_ACCEPTABLE);
 		}
 		return result;
 
 	}
 
 	@PutMapping("/{accountNumber}")
-	public ResponseEntity<String> modifyIbsBeneficiary(@PathVariable("accountNumber") BigInteger accountNumber,
+	public ResponseEntity<Message> modifyIbsBeneficiary(@PathVariable("accountNumber") BigInteger accountNumber,
 			@RequestBody Beneficiary beneficiary) throws IBSExceptions, IOException {
-		ResponseEntity<String> result = null;
+		ResponseEntity<Message> result = null;
 		if (beneficiaryservice.validateBeneficiaryAccountNameOrBankName(beneficiary.getAccountName())
 				&& beneficiaryservice.validateBeneficiaryAccountNumber(beneficiary.getAccountNumber().toString())) {
 			beneficiary.setTimestamp(LocalDateTime.now());
 			beneficiary.setBankName("IBS");
 			beneficiary.setIfscCode("IBS45623778");
 			beneficiaryservice.modifyBeneficiaryAccountDetails(accountNumber, beneficiary);
-			result = new ResponseEntity<String>("Account gone for modification", HttpStatus.OK);
+			result = new ResponseEntity<>(new Message("Account gone for modification", null, null), HttpStatus.OK);
 
 		} else {
-			result = new ResponseEntity<String>("format incorrect", HttpStatus.NOT_ACCEPTABLE);
+			result = new ResponseEntity<>(new Message("format incorrect", null, null), HttpStatus.NOT_ACCEPTABLE);
 		}
 		return result;
 	}

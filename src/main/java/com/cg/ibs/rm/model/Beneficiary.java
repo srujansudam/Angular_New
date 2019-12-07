@@ -44,7 +44,7 @@ public class Beneficiary implements Serializable {
 	@Column(name = "Beneficiary_Timestamp")
 	private LocalDateTime timestamp;
 	@Column(name = "BANKER_ID", nullable = false)
-	private Integer bankId;
+	private Integer bankerId;
 
 	@JsonIgnore
 	@ManyToOne
@@ -52,11 +52,11 @@ public class Beneficiary implements Serializable {
 	private Customer customer;
 
 	public Integer getBankId() {
-		return bankId;
+		return bankerId;
 	}
 
 	public void setBankId(Integer bankId) {
-		this.bankId = bankId;
+		this.bankerId = bankId;
 	}
 
 	public LocalDateTime getTimestamp() {
@@ -83,7 +83,7 @@ public class Beneficiary implements Serializable {
 		this.status = status;
 		this.adminRemarks = adminRemarks;
 		this.timestamp = timestamp;
-		this.bankId = bankId;
+		this.bankerId = bankId;
 		this.customer = customer;
 	}
 

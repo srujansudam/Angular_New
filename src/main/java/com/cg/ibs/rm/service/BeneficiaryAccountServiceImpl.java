@@ -106,7 +106,7 @@ public class BeneficiaryAccountServiceImpl implements BeneficiaryAccountService 
 		// BeneficiaryAccountServiceImpl class");
 		beneficiary.setStatus(CardStatus.PENDING);
 		Random r = new Random();
-		beneficiary.setBankId(r.nextInt(5));
+		beneficiary.setBankId(r.nextInt(5) + 1);
 		if (beneficiaryDao.copyDetails(uci, beneficiary)) {
 			check = true;
 		}

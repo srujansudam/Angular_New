@@ -39,8 +39,8 @@ public class CreditCardController {
 		LocalDate date= card.getDateOfExpiry();
 		String dateStr = date.toString().substring(0, 10);
 		if (creditCard.validateCardNumber(card.getCardNumber().toString())
-				&& creditCard.validateDateOfExpiry(dateStr))
-//				&& creditCard.validateNameOnCard(card.getNameOnCard())) 
+				&& creditCard.validateDateOfExpiry(dateStr)
+				&& creditCard.validateNameOnCard(card.getNameOnCard())) 
 		{
 			card.setTimestamp(LocalDateTime.now());
 			creditCard.saveCardDetails(new BigInteger(uci), card);
@@ -61,13 +61,13 @@ public class CreditCardController {
 	}
 
 	@DeleteMapping("/{cardNumber}")
-	public ResponseEntity<String> deleteCreditCard(@PathVariable("cardNumber") BigInteger cardNumber)
+	public ResponseEntity<Message> deleteCreditCard(@PathVariable("cardNumber") BigInteger cardNumber)
 			throws IBSExceptions {
-		String exc = null;
-		ResponseEntity<String> result = null;
+		
+		ResponseEntity<Message> result = null;
 		creditCard.deleteCardDetails(cardNumber);
-		exc = "Card deleted successfully";
-		result = new ResponseEntity<String>(exc, HttpStatus.OK);
+	 
+		result = new ResponseEntity<>(new Message("Card deleted successfully", null, null), HttpStatus.OK);
 		return result;
 
 	}
